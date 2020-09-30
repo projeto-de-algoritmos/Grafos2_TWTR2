@@ -16,7 +16,7 @@ import {
 } from './styles';
 
 const ProfilePage: React.FC = () => {
-  const { users, bfs, loggedUser } = useUsers();
+  const { users, bfs, dfs,loggedUser } = useUsers();
 
   const getNumberOfFollowers = useCallback((): number => {
     let numberOfFollowers = 0;
@@ -36,7 +36,8 @@ const ProfilePage: React.FC = () => {
   // Debug bfs
   useEffect(() => {
     bfs(users[1]);
-  }, [bfs, users]);
+    dfs(users[1]);
+  }, [bfs, users, dfs]);
 
   return (
     <Container>

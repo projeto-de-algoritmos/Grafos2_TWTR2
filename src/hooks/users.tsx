@@ -14,6 +14,7 @@ interface UsersContextData {
   loggedUser: User | null;
   setLoggedUser: React.Dispatch<React.SetStateAction<User | null>>;
   bfs(startingNode: User): number[][];
+  dfs(startingNode: User): void;
 }
 
 interface FollowingType {
@@ -58,6 +59,33 @@ const UsersProvider: React.FC = ({ children }) => {
     },
     [],
   );
+
+  const dfs = useCallback((startingNode: User): void => { 
+    let stack = [];
+    let explored = new Set();
+    stack.push(startingNode);
+
+    explored.add(startingNode);
+
+    while(stack.length !== 0) {
+      let item = stack.pop();
+
+      console.log(item);
+
+      if(item?.following) {
+        item?.following.filter(n => {
+          const user = users.find(user => user.username === n.username);
+
+          return !explored.has(user)
+        }).forEach(n => {
+          const user = users.find(user => user.username === n.username);
+          explored.add(user);
+          stack.push(user);
+        })
+      }
+    }
+  
+  },[users])
 
   const bfs = useCallback(
     (startingNode: User): number[][] => {
@@ -104,7 +132,7 @@ const UsersProvider: React.FC = ({ children }) => {
 
   return (
     <UsersContext.Provider
-      value={{ users, bfs, setUsers, loggedUser, setLoggedUser }}
+      value={{ users, bfs, dfs ,setUsers, loggedUser, setLoggedUser }}
     >
       {children}
     </UsersContext.Provider>
