@@ -14,7 +14,7 @@ interface UsersContextData {
   loggedUser: User | null;
   setLoggedUser: React.Dispatch<React.SetStateAction<User | null>>;
   bfs(startingNode: User): number[][];
-  dfs(startingNode: User): void;
+  dfs(startingNode: any): void;
 }
 
 interface FollowingType {
@@ -28,6 +28,9 @@ export interface User {
   description?: string;
   birth?: string;
   following: FollowingType[];
+  visited: boolean;
+  pre: number;
+  post: number;
 }
 
 const UsersContext = createContext<UsersContextData>({} as UsersContextData);
@@ -60,32 +63,28 @@ const UsersProvider: React.FC = ({ children }) => {
     [],
   );
 
-  const dfs = useCallback((startingNode: User): void => { 
-    let stack = [];
-    let explored = new Set();
-    stack.push(startingNode);
+  var n = 0
 
-    explored.add(startingNode);
+  const dfs = useCallback((currentNode: any): void => { 
+    n = n + 1;
+    console.log(currentNode.username);
+    currentNode.pre = n;
+    console.log('pre',n);
 
-    while(stack.length !== 0) {
-      let item = stack.pop();
-
-      console.log(item);
-
-      if(item?.following) {
-        item?.following.filter(n => {
-          const user = users.find(user => user.username === n.username);
-
-          return !explored.has(user)
-        }).forEach(n => {
-          const user = users.find(user => user.username === n.username);
-          explored.add(user);
-          stack.push(user);
-        })
+    for (var i = 0; i < currentNode.following.length; i++) {
+      const user = users.find(user => (user.username === currentNode.following[i].username));
+      if (user && user.visited === false) {
+        user.visited = true;
+        dfs(user);
       }
     }
-  
-  },[users])
+    n = n + 1
+    currentNode.post = n;
+    console.log('post',n);
+
+    console.log(users);
+
+  },[users])  
 
   const bfs = useCallback(
     (startingNode: User): number[][] => {
