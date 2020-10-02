@@ -16,7 +16,7 @@ import {
 } from './styles';
 
 const ProfilePage: React.FC = () => {
-  const { users, bfs, dfs,loggedUser } = useUsers();
+  const { users, bfs, dfs, loggedUser, transposedUsers } = useUsers();
 
   const getNumberOfFollowers = useCallback((): number => {
     let numberOfFollowers = 0;
@@ -44,7 +44,7 @@ const ProfilePage: React.FC = () => {
       <Banner>
         <Avatar />
       </Banner>
-
+      {console.log(transposedUsers)}
       <ProfileData>
         <EditButton outlined>Editar perfil</EditButton>
         <h1>{loggedUser?.completeName}</h1>

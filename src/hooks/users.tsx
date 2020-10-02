@@ -10,6 +10,7 @@ import { data } from './data';
 
 interface UsersContextData {
   users: User[];
+  transposedUsers: User[];
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
   loggedUser: User | null;
   setLoggedUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -44,6 +45,7 @@ const UsersProvider: React.FC = ({ children }) => {
   // ]
 
   const [users, setUsers] = useState<User[]>(data);
+  const [transposedUsers, setTransposedUsers] = useState<User[]>([]);
   const [loggedUser, setLoggedUser] = useState<User | null>(users[0]);
 
   useEffect(() => {
@@ -63,31 +65,64 @@ const UsersProvider: React.FC = ({ children }) => {
     [],
   );
 
-  var n = 0
+  let n = 0;
 
-  const dfs = useCallback((currentNode: any): void => { 
-    n = n + 1;
-    console.log(currentNode.username);
-    currentNode.pre = n;
-    console.log('pre',n);
+  const dfs = useCallback(
+    (currentNode: any): void => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      n += 1;
+      // console.log(currentNode.username);
+      currentNode.pre = n;
+      // console.log('pre', n);
 
-    for (var i = 0; i < currentNode.following.length; i++) {
-      const user = users.find(user => (user.username === currentNode.following[i].username));
-      if (user && user.visited === false) {
-        user.visited = true;
-        dfs(user);
+      for (let i = 0; i < currentNode.following.length; i++) {
+        const user = users.find(
+          (usr) => usr.username === currentNode.following[i].username,
+        );
+        if (user && user.visited === false) {
+          user.visited = true;
+          dfs(user);
+        }
       }
-    }
-    n = n + 1
-    currentNode.post = n;
-    console.log('post',n);
+      n += 1;
+      currentNode.post = n;
+      // console.log('post', n);
 
-    console.log(users);
+      // console.log(users);
+    },
+    [users],
+  );
 
-  },[users])  
+  const transposeGraph = (): void => {
+    const transposedUsersCopy = users;
+
+    transposedUsersCopy.forEach((user, idx) => {
+      transposedUsersCopy[idx].following = user.following.filter((follow) => {
+        const indexFollow = transposedUsersCopy.findIndex(
+          (usr) => usr.username === follow.username,
+        );
+
+        if (
+          !users[indexFollow].following.some(
+            (following) => following.username === user.username,
+          ) &&
+          idx < indexFollow
+        ) {
+          transposedUsersCopy[indexFollow].following.push({
+            username: user.username,
+          });
+          return false;
+        }
+        return true;
+      });
+    });
+
+    setTransposedUsers(transposedUsersCopy);
+  };
 
   const bfs = useCallback(
     (startingNode: User): number[][] => {
+      transposeGraph();
       const graph = [] as number[][];
 
       const visited = [] as boolean[];
@@ -124,6 +159,7 @@ const UsersProvider: React.FC = ({ children }) => {
         });
       }
       const cleanGraph = cleanFollowersData(graph.slice(1));
+
       return cleanGraph;
     },
     [users, cleanFollowersData],
@@ -131,7 +167,15 @@ const UsersProvider: React.FC = ({ children }) => {
 
   return (
     <UsersContext.Provider
-      value={{ users, bfs, dfs ,setUsers, loggedUser, setLoggedUser }}
+      value={{
+        users,
+        bfs,
+        dfs,
+        setUsers,
+        loggedUser,
+        setLoggedUser,
+        transposedUsers,
+      }}
     >
       {children}
     </UsersContext.Provider>
