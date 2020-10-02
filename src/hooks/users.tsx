@@ -44,7 +44,7 @@ const UsersProvider: React.FC = ({ children }) => {
   // caio = users[2].following = [amigoCaio],
   // ]
 
-  const [users, setUsers] = useState<User[]>(data);
+  const [users, setUsers] = useState<User[]>(data());
   const [transposedUsers, setTransposedUsers] = useState<User[]>([]);
   const [loggedUser, setLoggedUser] = useState<User | null>(users[0]);
 
@@ -93,8 +93,8 @@ const UsersProvider: React.FC = ({ children }) => {
     [users],
   );
 
-  const transposeGraph = (): void => {
-    const transposedUsersCopy = users;
+  const transposeGraph = useCallback((): void => {
+    const transposedUsersCopy = data();
 
     transposedUsersCopy.forEach((user, idx) => {
       transposedUsersCopy[idx].following = user.following.filter((follow) => {
@@ -105,8 +105,7 @@ const UsersProvider: React.FC = ({ children }) => {
         if (
           !users[indexFollow].following.some(
             (following) => following.username === user.username,
-          ) &&
-          idx < indexFollow
+          )
         ) {
           transposedUsersCopy[indexFollow].following.push({
             username: user.username,
@@ -118,11 +117,10 @@ const UsersProvider: React.FC = ({ children }) => {
     });
 
     setTransposedUsers(transposedUsersCopy);
-  };
+  }, [users]);
 
   const bfs = useCallback(
     (startingNode: User): number[][] => {
-      transposeGraph();
       const graph = [] as number[][];
 
       const visited = [] as boolean[];

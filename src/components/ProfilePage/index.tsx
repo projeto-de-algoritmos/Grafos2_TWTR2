@@ -44,7 +44,6 @@ const ProfilePage: React.FC = () => {
       <Banner>
         <Avatar />
       </Banner>
-      {console.log(transposedUsers)}
       <ProfileData>
         <EditButton outlined>Editar perfil</EditButton>
         <h1>{loggedUser?.completeName}</h1>
