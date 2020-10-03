@@ -41,7 +41,7 @@ const FollowSuggestion: React.FC<Props> = ({ name, nickname }) => {
         </Info>
       </div>
 
-      <FollowButton outlined onClick={() => handleFollow()}>
+      <FollowButton outlined onClick={() => handleFollow()} disabled>
         Seguir
       </FollowButton>
     </Container>
