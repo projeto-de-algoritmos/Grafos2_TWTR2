@@ -12,19 +12,18 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Matematica', 'Literatura', 'Videogames']
-
+      interests: ['Matematica', 'Literatura', 'Videogames'],
     },
     {
       username: 'guilherme-aguiar',
       completeName: 'Guilherme Aguiar',
       description: 'Software Engineer',
       place: 'Brasilia-DF',
-      following: [{ username: 'caiooliv' },{ username: 'carlinhos' }],
+      following: [{ username: 'caiooliv' }, { username: 'carlinhos' }],
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Literatura', 'Videogames']
+      interests: ['Literatura', 'Videogames'],
     },
     {
       username: 'caiooliv',
@@ -36,7 +35,7 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Nasa', 'Videogames']
+      interests: ['Nasa', 'Videogames'],
     },
     {
       username: 'carlinhos',
@@ -47,7 +46,7 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Politica', 'Feminismo', 'Coronavirus', 'Economia']
+      interests: ['Politica', 'Feminismo', 'Coronavirus', 'Economia'],
     },
     {
       username: 'matheus-rn',
@@ -58,7 +57,7 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Politica', 'Coronavirus', 'Economia']
+      interests: ['Politica', 'Coronavirus', 'Economia'],
     },
     {
       username: 'thiagoo',
@@ -69,7 +68,7 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Politica', 'Economia']
+      interests: ['Politica', 'Economia'],
     },
     {
       username: 'we11',
@@ -78,7 +77,7 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Filmes', 'Tarantino', 'Series']
+      interests: ['Filmes', 'Tarantino', 'Series'],
     },
     {
       username: 'an@_maria',
@@ -89,8 +88,7 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Famosos']
-      
+      interests: ['Famosos'],
     },
     {
       username: 'mario',
@@ -101,7 +99,7 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Filmes', 'Tarantino']
-    }
+      interests: ['Filmes', 'Tarantino'],
+    },
   ];
 };

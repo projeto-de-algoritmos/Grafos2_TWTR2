@@ -5,7 +5,6 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import { setTokenSourceMapRange } from 'typescript';
 
 import { data } from './data';
 
@@ -15,7 +14,8 @@ interface UsersContextData {
   loggedUser: User | null;
   setLoggedUser: React.Dispatch<React.SetStateAction<User | null>>;
   bfs(startingNode: User): number[][];
-  algoritmo(startingNode: any) : void;
+  algoritmo(): void;
+  recommendedInterests: string[];
 }
 
 interface FollowingType {
@@ -46,9 +46,13 @@ const UsersProvider: React.FC = ({ children }) => {
   // ]
 
   const [users, setUsers] = useState<User[]>(data());
+  const [recommendedInterests, setRecommendedInterests] = useState<string[]>(
+    [],
+  );
   const [loggedUser, setLoggedUser] = useState<User | null>(users[0]);
   let transposedUsers = [] as any;
-  let connectedInterests = [] as any;
+  const connectedInterests = [] as any;
+  let dfsIndex = 0;
 
   useEffect(() => {
     const newLoggedUser = users.find(
@@ -69,11 +73,12 @@ const UsersProvider: React.FC = ({ children }) => {
 
   let n = 0;
 
-    
-
   const dfs = useCallback(
     (currentNode: any): void => {
-      console.log(currentNode);
+      connectedInterests[dfsIndex].push({
+        username: currentNode.username,
+        interests: currentNode.interests,
+      });
       for (let i = 0; i < currentNode.following.length; i++) {
         const user = transposedUsers.find(
           (usr: User) => usr.username === currentNode.following[i].username,
@@ -85,15 +90,15 @@ const UsersProvider: React.FC = ({ children }) => {
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [transposedUsers],
   );
 
   const dfsNumbering = useCallback(
     (currentNode: any): void => {
-
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       n += 1;
       currentNode.pre = n;
-      // console.log('pre', n);
       for (let i = 0; i < currentNode.following.length; i++) {
         const user = users.find(
           (usr) => usr.username === currentNode.following[i].username,
@@ -106,10 +111,6 @@ const UsersProvider: React.FC = ({ children }) => {
       }
       n += 1;
       currentNode.post = n;
-      // console.log('post', n);
-
-      // console.log(users);  const [transposedUsers, setTransposedUsers] = useState<User[]>([]);
-
     },
     [users],
   );
@@ -139,33 +140,56 @@ const UsersProvider: React.FC = ({ children }) => {
     return transposedUsersCopy;
   }, [users]);
 
-  const algoritmo = () => {
-    dfsNumbering(users[0]);
-    // console.log(users);
+  const algoritmo = (): void => {
+    dfsNumbering(loggedUser);
     const tGraph = transposeGraph();
-    // console.log(tGraph);
-    const x = tGraph.map((n, idx) => {
-      return {...n, pre: users[idx].pre, post: users[idx].post}
-    })
-    transposedUsers = x;
-    // console.log(x)
-    while (transposedUsers.some((usr : User) => 
-      usr.visited === false
-    )) {
+    transposedUsers = tGraph.map((node, idx) => {
+      return { ...node, pre: users[idx].pre, post: users[idx].post };
+    });
+
+    while (transposedUsers.some((usr: User) => usr.visited === false)) {
+      connectedInterests[dfsIndex] = [];
       const posts = transposedUsers.map((user: User) => {
         if (!user.visited) return user.post;
         return null;
       });
       const maxPost = Math.max(...posts);
-    
-      let nextUser = transposedUsers.find((usr: User) => usr.post === maxPost)
-      dfs(nextUser)
-      console.log("------------");
-    }
-      
-    
 
-  }
+      const nextUser = transposedUsers.find(
+        (usr: User) => usr.post === maxPost,
+      );
+      dfs(nextUser);
+      dfsIndex += 1;
+    }
+
+    if (loggedUser) {
+      const connectedInterestIndex = connectedInterests.findIndex(
+        (value: any) =>
+          value.some((v: any) => v.username === loggedUser.username),
+      );
+
+      const newInterests = new Set();
+      connectedInterests[connectedInterestIndex].forEach((user: any) => {
+        user.interests.forEach((inte: any) => {
+          if (!loggedUser.interests.some((value) => value === inte)) {
+            newInterests.add(inte);
+          }
+        });
+      });
+
+      newInterests.forEach((newInte) => {
+        setRecommendedInterests((state) => [...state, newInte as string]);
+      });
+    }
+  };
+
+  useEffect(() => {
+    setRecommendedInterests([]);
+    if (loggedUser) {
+      algoritmo();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedUser]);
 
   const bfs = useCallback(
     (startingNode: User): number[][] => {
@@ -219,7 +243,8 @@ const UsersProvider: React.FC = ({ children }) => {
         algoritmo,
         setUsers,
         loggedUser,
-        setLoggedUser
+        setLoggedUser,
+        recommendedInterests,
       }}
     >
       {children}

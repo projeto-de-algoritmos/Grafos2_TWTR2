@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import { useUsers } from '../../hooks/users';
 
@@ -16,7 +16,7 @@ import {
 } from './styles';
 
 const ProfilePage: React.FC = () => {
-  const { users, bfs, loggedUser, algoritmo } = useUsers();
+  const { users, loggedUser } = useUsers();
 
   const getNumberOfFollowers = useCallback((): number => {
     let numberOfFollowers = 0;
@@ -32,12 +32,6 @@ const ProfilePage: React.FC = () => {
 
     return numberOfFollowers;
   }, [loggedUser, users]);
-
-  // Debug bfs
-  useEffect(() => {
-    bfs(users[1]);
-    algoritmo(users[0]);
-  }, [bfs, users]);
 
   return (
     <Container>

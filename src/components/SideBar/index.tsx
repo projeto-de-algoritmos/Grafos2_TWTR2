@@ -16,7 +16,7 @@ import {
 } from './styles';
 
 const SideBar: React.FC = () => {
-  const { users, bfs, loggedUser } = useUsers();
+  const { users, bfs, loggedUser, recommendedInterests } = useUsers();
   const [graph, setGraph] = useState<number[][]>([]);
 
   useEffect(() => {
@@ -32,9 +32,8 @@ const SideBar: React.FC = () => {
 
       <StickyBox>
         <Body>
-          {/* Aplicar grafo aqui */}
           <List
-            title="Talvez você curta"
+            title="Recomendações"
             elements={graph.map((userIndex: number[]) => {
               return (
                 <FollowSuggestion
@@ -45,8 +44,10 @@ const SideBar: React.FC = () => {
             })}
           />
           <List
-            title="O que está acontecendo"
-            elements={[<News />, <News />, <News />]}
+            title="Talvez você tenha interrese"
+            elements={recommendedInterests.map((value: string) => {
+              return <News item={value} />;
+            })}
           />
         </Body>
       </StickyBox>
