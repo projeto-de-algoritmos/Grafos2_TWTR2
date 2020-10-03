@@ -8,20 +8,23 @@ export const data = (): User[] => {
       description: 'Software Engineer',
       place: 'Brasilia-DF',
       birth: '14 de julho de 1997',
-      following: [{ username: 'guilherme-aguiar' }, { username: 'thiagoo' }],
+      following: [{ username: 'guilherme-aguiar' }],
       visited: false,
       pre: 0,
       post: 0,
+      interests: ['Matematica', 'Literatura', 'Videogames']
+
     },
     {
       username: 'guilherme-aguiar',
       completeName: 'Guilherme Aguiar',
       description: 'Software Engineer',
       place: 'Brasilia-DF',
-      following: [{ username: 'caiooliv' }, { username: 'carlinhos' }],
+      following: [{ username: 'caiooliv' },{ username: 'carlinhos' }],
       visited: false,
       pre: 0,
       post: 0,
+      interests: ['Literatura', 'Videogames']
     },
     {
       username: 'caiooliv',
@@ -29,10 +32,11 @@ export const data = (): User[] => {
       description: 'Software Engineer',
       place: 'Brasilia-DF',
       birth: '18 de janeiro de 1997',
-      following: [{ username: 'guilherme-aguiar' }, { username: 'alex' }],
+      following: [{ username: 'lucassiqz' }],
       visited: false,
       pre: 0,
       post: 0,
+      interests: ['Nasa', 'Videogames']
     },
     {
       username: 'carlinhos',
@@ -43,66 +47,61 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
+      interests: ['Politica', 'Feminismo', 'Coronavirus', 'Economia']
     },
     {
       username: 'matheus-rn',
       completeName: 'Matheus Rabelo Nonato',
       description: 'Software Engineer',
       place: 'Brasilia-DF',
-      following: [],
+      following: [{ username: 'thiagoo' }, { username: 'we11' }],
       visited: false,
       pre: 0,
       post: 0,
+      interests: ['Politica', 'Coronavirus', 'Economia']
     },
     {
       username: 'thiagoo',
       completeName: 'Thiago Assis',
       description: 'Software Engineer',
       place: 'São Paulo-SP',
-      following: [{ username: 'we11' }],
+      following: [{ username: 'carlinhos' }],
       visited: false,
       pre: 0,
       post: 0,
+      interests: ['Politica', 'Economia']
     },
     {
       username: 'we11',
-      description: 'Software Engineer',
-      place: 'Rio de Janeiro-RJ',
       completeName: 'Wellington Santiago',
-      following: [{ username: 'an@_maria' }, { username: 'mario' }],
+      following: [{ username: 'an@_maria' }],
       visited: false,
       pre: 0,
       post: 0,
+      interests: ['Filmes', 'Tarantino', 'Series']
     },
     {
       username: 'an@_maria',
       description: 'Software Engineer',
       place: 'Curitiba-PR',
       completeName: 'Ana Maria da Silva',
-      following: [{ username: 'alex' }],
+      following: [{ username: 'mario' }],
       visited: false,
       pre: 0,
       post: 0,
+      interests: ['Famosos']
+      
     },
     {
       username: 'mario',
       description: 'Software Engineer',
       place: 'Curitiba-PR',
       completeName: 'Mario Ferreira',
-      following: [],
+      following: [{ username: 'we11' }],
       visited: false,
       pre: 0,
       post: 0,
-    },
-    {
-      username: 'alex',
-      description: 'Software Engineer',
-      place: 'Curitiba-PR',
-      completeName: 'Alex Oliveira',
-      following: [{ username: 'lucassiqz' }],
-      visited: false,
-      pre: 0,
-      post: 0,
-    },
+      interests: ['Filmes', 'Tarantino']
+    }
   ];
 };

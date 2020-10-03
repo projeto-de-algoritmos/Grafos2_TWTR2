@@ -5,17 +5,17 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
+import { setTokenSourceMapRange } from 'typescript';
 
 import { data } from './data';
 
 interface UsersContextData {
   users: User[];
-  transposedUsers: User[];
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
   loggedUser: User | null;
   setLoggedUser: React.Dispatch<React.SetStateAction<User | null>>;
   bfs(startingNode: User): number[][];
-  dfs(startingNode: any): void;
+  algoritmo(startingNode: any) : void;
 }
 
 interface FollowingType {
@@ -32,6 +32,7 @@ export interface User {
   visited: boolean;
   pre: number;
   post: number;
+  interests: string[];
 }
 
 const UsersContext = createContext<UsersContextData>({} as UsersContextData);
@@ -45,8 +46,9 @@ const UsersProvider: React.FC = ({ children }) => {
   // ]
 
   const [users, setUsers] = useState<User[]>(data());
-  const [transposedUsers, setTransposedUsers] = useState<User[]>([]);
   const [loggedUser, setLoggedUser] = useState<User | null>(users[0]);
+  let transposedUsers = [] as any;
+  let connectedInterests = [] as any;
 
   useEffect(() => {
     const newLoggedUser = users.find(
@@ -67,33 +69,52 @@ const UsersProvider: React.FC = ({ children }) => {
 
   let n = 0;
 
+    
+
   const dfs = useCallback(
     (currentNode: any): void => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+      console.log(currentNode);
+      for (let i = 0; i < currentNode.following.length; i++) {
+        const user = transposedUsers.find(
+          (usr: User) => usr.username === currentNode.following[i].username,
+        );
+        if (user && user.visited === false) {
+          currentNode.visited = true;
+          user.visited = true;
+          dfs(user);
+        }
+      }
+    },
+    [transposedUsers],
+  );
+
+  const dfsNumbering = useCallback(
+    (currentNode: any): void => {
+
       n += 1;
-      // console.log(currentNode.username);
       currentNode.pre = n;
       // console.log('pre', n);
-
       for (let i = 0; i < currentNode.following.length; i++) {
         const user = users.find(
           (usr) => usr.username === currentNode.following[i].username,
         );
         if (user && user.visited === false) {
+          currentNode.visited = true;
           user.visited = true;
-          dfs(user);
+          dfsNumbering(user);
         }
       }
       n += 1;
       currentNode.post = n;
       // console.log('post', n);
 
-      // console.log(users);
+      // console.log(users);  const [transposedUsers, setTransposedUsers] = useState<User[]>([]);
+
     },
     [users],
   );
 
-  const transposeGraph = useCallback((): void => {
+  const transposeGraph = useCallback((): User[] => {
     const transposedUsersCopy = data();
 
     transposedUsersCopy.forEach((user, idx) => {
@@ -101,7 +122,6 @@ const UsersProvider: React.FC = ({ children }) => {
         const indexFollow = transposedUsersCopy.findIndex(
           (usr) => usr.username === follow.username,
         );
-
         if (
           !users[indexFollow].following.some(
             (following) => following.username === user.username,
@@ -116,8 +136,36 @@ const UsersProvider: React.FC = ({ children }) => {
       });
     });
 
-    setTransposedUsers(transposedUsersCopy);
+    return transposedUsersCopy;
   }, [users]);
+
+  const algoritmo = () => {
+    dfsNumbering(users[0]);
+    // console.log(users);
+    const tGraph = transposeGraph();
+    // console.log(tGraph);
+    const x = tGraph.map((n, idx) => {
+      return {...n, pre: users[idx].pre, post: users[idx].post}
+    })
+    transposedUsers = x;
+    // console.log(x)
+    while (transposedUsers.some((usr : User) => 
+      usr.visited === false
+    )) {
+      const posts = transposedUsers.map((user: User) => {
+        if (!user.visited) return user.post;
+        return null;
+      });
+      const maxPost = Math.max(...posts);
+    
+      let nextUser = transposedUsers.find((usr: User) => usr.post === maxPost)
+      dfs(nextUser)
+      console.log("------------");
+    }
+      
+    
+
+  }
 
   const bfs = useCallback(
     (startingNode: User): number[][] => {
@@ -168,11 +216,10 @@ const UsersProvider: React.FC = ({ children }) => {
       value={{
         users,
         bfs,
-        dfs,
+        algoritmo,
         setUsers,
         loggedUser,
-        setLoggedUser,
-        transposedUsers,
+        setLoggedUser
       }}
     >
       {children}
