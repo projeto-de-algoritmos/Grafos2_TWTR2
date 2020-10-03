@@ -12,7 +12,7 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Matematica', 'Literatura', 'Videogames'],
+      interests: ['Matematica', 'Literatura'],
     },
     {
       username: 'guilherme-aguiar',
@@ -23,7 +23,7 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Literatura', 'Videogames'],
+      interests: ['Literatura', 'Videogames', 'Filmes'],
     },
     {
       username: 'caiooliv',
@@ -35,7 +35,7 @@ export const data = (): User[] => {
       visited: false,
       pre: 0,
       post: 0,
-      interests: ['Nasa', 'Videogames'],
+      interests: ['Nasa', 'Videogames', 'Futebol'],
     },
     {
       username: 'carlinhos',
