@@ -50,6 +50,7 @@ const UsersProvider: React.FC = ({ children }) => {
     [],
   );
   const [loggedUser, setLoggedUser] = useState<User | null>(users[0]);
+  const [usersForDfs] = useState<User[]>(users);
   let transposedUsers = [] as any;
   const connectedInterests = [] as any;
   let dfsIndex = 0;
@@ -100,7 +101,7 @@ const UsersProvider: React.FC = ({ children }) => {
       n += 1;
       currentNode.pre = n;
       for (let i = 0; i < currentNode.following.length; i++) {
-        const user = users.find(
+        const user = usersForDfs.find(
           (usr) => usr.username === currentNode.following[i].username,
         );
         if (user && user.visited === false) {
@@ -112,7 +113,7 @@ const UsersProvider: React.FC = ({ children }) => {
       n += 1;
       currentNode.post = n;
     },
-    [users],
+    [usersForDfs],
   );
 
   const transposeGraph = useCallback((): User[] => {
@@ -124,7 +125,7 @@ const UsersProvider: React.FC = ({ children }) => {
           (usr) => usr.username === follow.username,
         );
         if (
-          !users[indexFollow].following.some(
+          !usersForDfs[indexFollow].following.some(
             (following) => following.username === user.username,
           )
         ) {
@@ -138,13 +139,17 @@ const UsersProvider: React.FC = ({ children }) => {
     });
 
     return transposedUsersCopy;
-  }, [users]);
+  }, [usersForDfs]);
 
   const algoritmo = (): void => {
-    dfsNumbering(loggedUser);
+    dfsNumbering(usersForDfs[0]);
     const tGraph = transposeGraph();
     transposedUsers = tGraph.map((node, idx) => {
-      return { ...node, pre: users[idx].pre, post: users[idx].post };
+      return {
+        ...node,
+        pre: usersForDfs[idx].pre,
+        post: usersForDfs[idx].post,
+      };
     });
 
     while (transposedUsers.some((usr: User) => usr.visited === false)) {
